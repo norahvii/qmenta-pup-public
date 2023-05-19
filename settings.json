@@ -9,8 +9,8 @@
       "id": "FreeSurfer",
       "mandatory": 1,
       "file_filter": "c_fs(r'.*')",
-      "in_filter": ["mri_brain_data"],
-      "out_filter": [],
+      "in_filter": [],
+      "out_filter": ["qmenta_upload_offline_analysis_staging"],
       "batch": 1,
       "anchor": 1,
       "section": "data"
