@@ -1,0 +1,250 @@
+[
+      {
+      "type": "info",
+      "content": "Required inputs:<br><b>Set Container Launch Values</b>: something not bold"
+      },
+      {
+      "type": "container",
+      "title": "FreeSurfer Data",
+      "id": "FreeSurfer",
+      "mandatory": 1,
+      "file_filter": "c_fs(r'.*')",
+      "in_filter": ["mri_brain_data"],
+      "out_filter": [],
+      "batch": 1,
+      "anchor": 1,
+      "section": "data"
+      },
+      {
+      "type": "container",
+      "title": "PET Data",
+      "id": "PET",
+      "mandatory": 1,
+      "file_filter": "c_pet(m'PET')",
+      "in_filter": ["mri_brain_data"],
+      "out_filter": [],
+      "batch": 1,
+      "anchor": 1,
+      "section": "data"
+      },
+      {
+        "type": "line"
+      },
+      {
+        "type": "heading",
+        "content": "PET source data params"
+      },
+      {
+        "type": "string",
+        "title": "PET ID",
+        "id":"pet_id",
+        "mandatory": 1,
+        "default":""
+      },
+      {
+        "type": "decimal",
+        "title": "Half Life",
+        "id":"half_life",
+        "mandatory": 1,
+        "default":6586.2
+      },
+      {
+        "type": "single_choice",
+        "title": "Data file format",
+        "id":"data_file",
+        "mandatory": 1,
+        "default":"a",
+        "options":[["a", "DICOM"], ["b", "ECAT"], ["c", "Siemens InterFile"]]
+      },
+      {
+        "type": "decimal",
+        "title": "XY Filter",
+        "id":"filterxy",
+        "mandatory": 1,
+        "default":5.5
+      },
+      {
+        "type": "decimal",
+        "title": "Z Filter",
+        "id":"filterz",
+        "mandatory": 1,
+        "default":5.5
+      },
+      {
+        "type": "integer",
+        "title": "Delay",
+        "id":"delay",
+        "mandatory": 1,
+        "default":0
+      },
+      {
+        "type": "line"
+      },
+      {
+        "type": "heading",
+        "content": "PET motion correction params"
+      },
+      {
+        "type": "integer",
+        "title": "Time bin length (in seconds)",
+        "id":"tbl",
+        "mandatory": 1,
+        "default":300
+      },
+      {
+        "type": "integer",
+        "title": "Tolerance for motion correction",
+        "id":"tolmoco",
+        "mandatory": 1,
+        "default":200
+      },
+      {
+        "type": "line"
+      },
+      {
+        "type": "heading",
+        "content": "PET to target registration parameters"
+      },
+      {
+        "type": "string",
+        "title": "Reference Image",
+        "id": "refimg",
+        "mandatory": 1,
+        "default": "T1001"
+      },
+      {
+        "type": "integer",
+        "title": "Tolreg",
+        "id": "tolreg",
+        "mandatory": 1,
+        "default":200
+      },
+      {
+        "type": "string",
+        "title": "Rmf",
+        "id": "rmf",
+        "mandatory": 1,
+        "default":"-rm"
+      },
+      {
+        "type": "string",
+        "title": "Mmf",
+        "id": "mmf",
+        "mandatory": 1,
+        "default":"-mm"
+      },
+      {
+        "type": "string",
+        "title": "Rbf",
+        "id": "rbf",
+        "mandatory": 1,
+        "default":"-rb 8"
+      },
+      {
+        "type": "string",
+        "title": "Mbf",
+        "id": "mbf",
+        "mandatory": 1,
+        "default":"-mb 6"
+      },
+      {
+        "type": "string",
+        "title": "Modf",
+        "id": "modf",
+        "mandatory": 0,
+        "default":""
+      },
+      {
+        "type": "line"
+      },
+      {
+        "type": "heading",
+        "content": "PVC flags"
+      },
+      {
+        "type": "integer",
+        "title": "PVC2C Flag",
+        "id":"pvc2cflag",
+        "mandatory":1,
+        "default":1
+      },
+      {
+        "type": "integer",
+        "title": "RSF Flag",
+        "id":"rsfflag",
+        "mandatory":1,
+        "default":1
+      },
+      {
+        "type": "decimal",
+        "title": "Full Width Half Max",
+        "id":"fwhm",
+        "mandatory":1,
+        "default":8.0
+      },
+      {
+        "type": "line"
+      },
+      {
+        "type": "heading",
+        "content": "Modeling parameters"
+      },
+      {
+        "type": "integer",
+        "title": "MST",
+        "id":"mst_value",
+        "mandatory":1,
+        "default":80
+      },
+      {
+        "type": "integer",
+        "title": "MDT",
+        "id":"mdt_value",
+        "mandatory":1,
+        "default":20
+      },
+      {
+        "type": "single_choice",
+        "title": "Model",
+        "id":"model_choice",
+        "mandatory":1,
+        "default":"b",
+        "options":[["a", "logan"], ["b", "nonlogan"]]
+      },
+      {
+        "type": "integer",
+        "title": "SUVR",
+        "id":"suvr_flag",
+        "mandatory":1,
+        "default":1
+      },
+      {
+        "type": "decimal",
+        "title": "K2",
+        "id":"k2_rate",
+        "mandatory":1,
+        "default":0.16
+      },
+      {
+        "type": "string",
+        "title": "Reference ROI label string",
+        "id": "roi_label",
+        "mandatory": 1,
+        "default": "Cerebellum-Cortex"
+      },
+      {
+        "type": "line"
+      },
+      {
+        "type": "heading",
+        "content": "FreeSurfer Version"
+      },
+      {
+        "type": "single_choice",
+        "title": "Version",
+        "id":"fs_version",
+        "mandatory":1,
+        "default":"b",
+        "options":[["a", "FreeSurfer 5.3"], ["b", "FreeSurfer 7.11"]]
+      }
+  ]
