@@ -9,7 +9,6 @@ def run(context):
     settings = context.get_settings()
 
     # Imported from settings.json
-    first = settings["first"] # file
     pet_id = settings["pet_id"] # str
     half_life = str(settings["half_life"]) # float
     data_file = {"a": "0", "b": "1", "c": "2", "d": "5"}[settings["data_file"]] # a or b or c or d
@@ -43,7 +42,7 @@ def run(context):
 ################################################################################
 
 # Location of the original PET data file (absolute path)
-petdir=/data/input/PET/{pet_id}
+petdir=/data/input/PET/
 
 # PET data file name
 # this example is if your PET scan file is in NIFTI format and is assuming that
@@ -92,7 +91,7 @@ tolmoco={tolmoco}
 FS=1
 
 # Location of the FreeSurfer generated mgz files.
-fsdir=/data/input/FreeSurfer/1092_046_mMR_v1/mri
+fsdir=/data/input/FreeSurfer/mri
 
 # The name of the MR data file in FreeSurfer space (T1.mgz is used)
 t1=T1.mgz
