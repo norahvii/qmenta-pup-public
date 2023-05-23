@@ -202,7 +202,7 @@ roisfn={roisfn}
     cwd = os.getcwd()
     script_path = cwd+"/rootpetproc.sh"
 
-    subprocess.run(["pet_proc_script", script_path])
+    subprocess.run(["bash", script_path])
     print("Pet proc successfully fnihshed.")
 
     # Upload the files
