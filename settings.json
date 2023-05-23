@@ -8,7 +8,7 @@
       "title": "FreeSurfer Data",
       "id": "FreeSurfer",
       "mandatory": 1,
-      "file_filter": "c_fs(r'.*')",
+      "file_filter": "c_fs[1,*](r'.*')",
       "in_filter": [],
       "out_filter": ["qmenta_upload_offline_analysis_staging"],
       "batch": 1,
