@@ -213,7 +213,9 @@ roisfn={roisfn}
     script_path = cwd+"/rootpetproc.sh"
 
     subprocess.run(["bash", script_path])
-    print("Pet proc successfully fnihshed.")
+    context.upload_file("/root/OUTPUT", f"{pet_id}.petlog")
+    context.set_progress("Pet proc successfully fnihshed.")
+    return
 
     # Upload the files 
     """ Upload results """
@@ -226,7 +228,3 @@ roisfn={roisfn}
         relative_path = os.path.relpath(path, root_directory)
         if os.path.isfile(path):  # Check if the path is a file
             context.upload_file(path, relative_path)
-        elif os.path.isdir(path):  # Check if the path is a directory
-            zip_path = os.path.join(upload_dir, f'{relative_path}.zip')
-            zip_directory(path, zip_path)
-            context.upload_file(zip_path, f'{relative_path}.zip')
