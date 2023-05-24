@@ -201,10 +201,11 @@ roisfn={roisfn}
         context.set_progress(f"{pet_handler.get_file_path()} -> {input_dir}")
 
     # Run the rootpetproc.sh script
-    cwd = os.getcwd()
-    script_path = cwd+"/rootpetproc.sh"
+    script_path = "/root/rootpetproc.sh"
 
-    subprocess.run(["bash", script_path])
+    output, error = subprocess.Popen(["bash", script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+    context.set_progress(f"SCRIPT RUN OUTPUT: {output}")
+    context.set_progress(f"SCRIPT RUN ERR: {error}")
 
     # Upload the files 
     """ Upload results """
@@ -212,15 +213,17 @@ roisfn={roisfn}
     for target in glob.glob("/root/OUTPUT/*.petproc"):
         context.upload_file(target, os.path.relpath(target, "/root/OUTPUT/"))
 
+    return
     # Define the target directory and folder name
     target_directory = "/root/OUTPUT"
     folder_name = "pet_proc"
 
     # Check if the folder exists in the target directory
     folder_path = os.path.join(target_directory, folder_name)
+    zip_file_path = os.path.join(target_directory, folder_name + ".zip")
+
     if os.path.isdir(folder_path):
         # Create the zip file
-        zip_file_path = os.path.join(target_directory, folder_name + ".zip")
         with zipfile.ZipFile(zip_file_path, "w") as zipf:
             for root, dirs, files in os.walk(folder_path):
                 for file in files:
@@ -228,8 +231,7 @@ roisfn={roisfn}
                     zipf.write(file_path, os.path.relpath(file_path, folder_path))
 
         context.set_progress("Folder '{}' zipped successfully as '{}'.".format(folder_name, zip_file_path))
+        context.upload_file(zip_file_path, os.path.basename(zip_file_path))
+        context.set_progress("pet_proc.zip uploaded successfully.")
     else:
         context.set_progress("Folder '{}' does not exist in the target directory.".format(folder_name))
-
-    context.upload_file(zip_file_path, os.path.basename(zip_file_path))
-    context.set_progress("pet_proc.zip uploaded successfully.")
