@@ -2,16 +2,6 @@
 import os
 import glob
 import subprocess
-import zipfile
-
-def zip_directory(directory_path, zip_path):
-    # Directory zipping helper function
-    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
-        for root, dirs, files in os.walk(directory_path):
-            for file in files:
-                file_path = os.path.join(root, file)
-                relative_path = os.path.relpath(file_path, directory_path)
-                zipf.write(file_path, relative_path)
 
 def run(context):
     # Get settings information from settings.json
