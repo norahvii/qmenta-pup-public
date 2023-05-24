@@ -2,6 +2,16 @@
 import os
 import glob
 import subprocess
+import zipfile
+
+def zip_directory(directory_path, zip_path):
+    # Directory zipping helper function
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        for root, dirs, files in os.walk(directory_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                relative_path = os.path.relpath(file_path, directory_path)
+                zipf.write(file_path, relative_path)
 
 def run(context):
     # Get settings information from settings.json
@@ -38,7 +48,7 @@ def run(context):
 
     with open(f'../data/input/params/{pet_id}.params', 'w') as file:
         file.write(f"""################################################################################
-# PET source data params                                                     #
+# PET source data params						     #
 ################################################################################
 
 # Location of the original PET data file (absolute path)
@@ -192,7 +202,7 @@ roisfn={roisfn}
     for fs_handler in fs_handlers:
         fs_handler.download(input_dir)
         context.set_progress(f"{fs_handler.get_file_path()} -> {input_dir}")
-
+        
     pet_handlers = context.get_files("PET", file_filter_condition_name="c_pet")
     for pet_handler in pet_handlers:
         pet_handler.download(input_dir)
@@ -205,11 +215,18 @@ roisfn={roisfn}
     subprocess.run(["bash", script_path])
     print("Pet proc successfully fnihshed.")
 
-    # Upload the files
+    # Upload the files 
     """ Upload results """
 
     # Set the root directory path
     root_directory = 'root/OUTPUT'
 
+    # Upload all files and identified zip files
     for path in glob.glob(f'{root_directory}/**', recursive=True):
-        context.upload_file(path, os.path.relpath(path, root_directory))  # or os.path.basename(path, root_directory)
+        relative_path = os.path.relpath(path, root_directory)
+        if os.path.isfile(path):  # Check if the path is a file
+            context.upload_file(path, relative_path)
+        elif os.path.isdir(path):  # Check if the path is a directory
+            zip_path = os.path.join(upload_dir, f'{relative_path}.zip')
+            zip_directory(path, zip_path)
+            context.upload_file(zip_path, f'{relative_path}.zip')
