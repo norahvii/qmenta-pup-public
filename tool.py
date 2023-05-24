@@ -2,7 +2,9 @@
 import os
 import glob
 import subprocess
-
+import zipfile
+import shutil
+    
 def run(context):
     # Get settings information from settings.json
     analysis_data = context.fetch_analysis_data()
@@ -203,18 +205,31 @@ roisfn={roisfn}
     script_path = cwd+"/rootpetproc.sh"
 
     subprocess.run(["bash", script_path])
-    context.upload_file("/root/OUTPUT", f"{pet_id}.petlog")
-    context.set_progress("Pet proc successfully fnihshed.")
-    return
 
     # Upload the files 
     """ Upload results """
 
-    # Set the root directory path
-    root_directory = 'root/OUTPUT'
+    for target in glob.glob("/root/OUTPUT/*.petproc"):
+        context.upload_file(target, os.path.relpath(target, "/root/OUTPUT/"))
 
-    # Upload all files and identified zip files
-    for path in glob.glob(f'{root_directory}/**', recursive=True):
-        relative_path = os.path.relpath(path, root_directory)
-        if os.path.isfile(path):  # Check if the path is a file
-            context.upload_file(path, relative_path)
+    # Define the target directory and folder name
+    target_directory = "/root/OUTPUT"
+    folder_name = "pet_proc"
+
+    # Check if the folder exists in the target directory
+    folder_path = os.path.join(target_directory, folder_name)
+    if os.path.isdir(folder_path):
+        # Create the zip file
+        zip_file_path = os.path.join(target_directory, folder_name + ".zip")
+        with zipfile.ZipFile(zip_file_path, "w") as zipf:
+            for root, dirs, files in os.walk(folder_path):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    zipf.write(file_path, os.path.relpath(file_path, folder_path))
+
+        context.set_progress("Folder '{}' zipped successfully as '{}'.".format(folder_name, zip_file_path))
+    else:
+        context.set_progress("Folder '{}' does not exist in the target directory.".format(folder_name))
+
+    context.upload_file(zip_file_path, os.path.basename(zip_file_path))
+    context.set_progress("pet_proc.zip uploaded successfully.")
