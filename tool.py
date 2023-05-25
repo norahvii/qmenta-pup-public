@@ -3,7 +3,7 @@ import os
 import glob
 import subprocess
 import zipfile
-    
+
 def run(context):
     # Get settings information from settings.json
     analysis_data = context.fetch_analysis_data()
@@ -177,21 +177,24 @@ roisfn={roisfn}
     for fs_handler in fs_handlers:
         fs_handler.download(input_dir)
         context.set_progress(f"{fs_handler.get_file_path()} -> {input_dir}")
-        
+
     pet_handlers = context.get_files("PET", file_filter_condition_name="c_pet")
     for pet_handler in pet_handlers:
         pet_handler.download(input_dir)
         context.set_progress(f"{pet_handler.get_file_path()} -> {input_dir}")
 
-    # Run the rootpetproc.sh script
-    cwd = os.getcwd()
+    os.chdir('root')
     script_path = "/root/rootpetproc.sh"
+    context.set_progress(f"Bash script path currently set to: {script_path}")
 
-    output, error = subprocess.Popen(["bash", script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
-    context.set_progress(f"SCRIPT RUN OUTPUT: {output}")
-    context.set_progress(f"SCRIPT RUN ERR: {error}")
+    try:
+        # Run the rootpetproc.sh script
+        subprocess.run(["bash", script_path])
 
-    # Upload the files 
+    except Exception as e:
+        context.set_progress(f"Error occurred: {str(e)}")
+
+    # Upload the files
     for target in glob.glob("/root/OUTPUT/*.petproc"):
         context.upload_file(target, os.path.relpath(target, "/root/OUTPUT/"))
 
