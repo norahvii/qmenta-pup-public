@@ -1,22 +1,5 @@
 #!/bin/bash
 
-function move_FS_files() {
-    fs_mri_path=`find INPUT/FreeSurfer/* -name "mri" -type d | head -n 1`
-    fs_path=`echo ${fs_mri_path} | sed -e 's/\/mri//g'`; echo $fs_path
-    mkdir -p ../../data/input/FreeSurfer
-    mv ${fs_path}/* ../../data/input/FreeSurfer/
-}
-
-move_FS_files
-echo "Finished moving FreeSurfer folders."
-
-function move_PET_files() {
-    find ./INPUT/PET -type f -name "*.dcm" -exec mkdir -p ../../data/input/PET/ \; -exec mv {} ../../data/input/PET/ \;
-}
-
-move_PET_files
-echo "Finished moving PET files."
-
 pushd ./OUTPUT/
 
 # Loop over all .params files in the input directory
