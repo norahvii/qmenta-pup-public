@@ -85,6 +85,8 @@ COPY pup_plot_fs.config /pup/config
 RUN mkdir -p /root/INPUT
 RUN mkdir -p /root/OUTPUT
 RUN mkdir -p /data/input/params
+RUN mkdir -p /data/input/PET
+RUN mkdir -p /data/input/FreeSurfer
 
 # Configure cshrc to source SetUpFreeSurfer.csh
 RUN /bin/tcsh -c 'echo -e "source $FREESURFER_HOME/SetUpFreeSurfer.csh &>/dev/null" >> /root/.cshrc '

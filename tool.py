@@ -3,6 +3,7 @@ import os
 import glob
 import subprocess
 import zipfile
+import shutil
 
 def run(context):
     # Get settings information from settings.json
@@ -172,7 +173,7 @@ roisfn={roisfn}
     os.makedirs(output_dir, exist_ok=True)
     context.set_progress(value=0, message="Processing")  # Set progress status so it is displayed in the platform
 
-    # Retrieve input files
+    # Retrieve input files from the platform
     fs_handlers = context.get_files("FreeSurfer", file_filter_condition_name="c_fs")
     for fs_handler in fs_handlers:
         fs_handler.download(input_dir)
@@ -183,6 +184,81 @@ roisfn={roisfn}
         pet_handler.download(input_dir)
         context.set_progress(f"{pet_handler.get_file_path()} -> {input_dir}")
 
+
+    # Copy all the PET files to the data folder
+    current_dir = '/root'
+    destination_dir = '/data/input/PET'
+
+    # Function to recursively find all DCM files
+    def find_dcm_files(directory):
+        dcm_files = []
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                if file.endswith('.dcm'):
+                    dcm_files.append(os.path.join(root, file))
+        return dcm_files
+
+    # Find the "INPUT" folder
+    input_dir = None
+    for root, dirs, files in os.walk(current_dir):
+        if 'INPUT' in dirs:
+            input_dir = os.path.join(root, 'INPUT')
+            break
+
+    # Find the "PET" folder within the "INPUT" folder
+    pet_dir = None
+    if input_dir:
+        for root, dirs, files in os.walk(input_dir):
+            if 'PET' in dirs:
+                pet_dir = os.path.join(root, 'PET')
+                break
+
+    # Copy DCM files to the destination folder
+    if pet_dir:
+        dcm_files = find_dcm_files(pet_dir)
+        for file in dcm_files:
+            shutil.copy(file, destination_dir)
+            print(f"Copied {file} to {destination_dir}")
+    else:
+        print("Could not find the 'PET' folder within the 'INPUT' folder.")
+
+    # Copy all the FreeSurfer folders to the data folder
+    current_dir = '/root'
+    destination_dir = '/data/input/FreeSurfer'
+
+    # Function to copy folders and their contents recursively
+    def copy_folder(src, dst):
+        for item in os.listdir(src):
+            src_item = os.path.join(src, item)
+            dst_item = os.path.join(dst, item)
+            if os.path.isdir(src_item):
+                shutil.copytree(src_item, dst_item, symlinks=True)
+            else:
+                shutil.copy2(src_item, dst_item)
+
+    # Find the "INPUT" folder
+    input_dir = None
+    for root, dirs, files in os.walk(current_dir):
+        if 'INPUT' in dirs:
+            input_dir = os.path.join(root, 'INPUT')
+            break
+
+    # Find the cluster of five folders within the "INPUT" folder
+    cluster_dir = None
+    if input_dir:
+        for root, dirs, files in os.walk(input_dir):
+            if len(dirs) >= 5 and all(label in dirs for label in ['mri', 'scripts', 'stats', 'surf']):
+                cluster_dir = root
+                break
+
+    # Copy the cluster of folders to the destination folder
+    if cluster_dir:
+        copy_folder(cluster_dir, destination_dir)
+        print(f"Cluster of folders copied to {destination_dir}")
+    else:
+        print("Could not find the cluster of five folders within the 'INPUT' folder.")
+
+    # Prepare to run the petproc script
     os.chdir('root')
     script_path = "/root/rootpetproc.sh"
     context.set_progress(f"Bash script path currently set to: {script_path}")
