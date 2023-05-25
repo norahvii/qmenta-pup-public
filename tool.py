@@ -3,7 +3,6 @@ import os
 import glob
 import subprocess
 import zipfile
-import shutil
     
 def run(context):
     # Get settings information from settings.json
@@ -165,29 +164,13 @@ refroistr={roi_label}
 
 roisfn={roisfn}
 
-    """)
-    # Params file finished
-
-    """
-    Function invoked by the SDK that passes a context object. This object can then be used
-    to communicate with the platform in the context of that particular analysis to fetch files,
-    report progress, and upload results, among others.
-
-    Parameters
-    ----------
-    context : qmenta.sdk.context.AnalysisContext
-        Analysis context object to communicate with the QMENTA Platform.
-    """
-
-    """ Basic setup """
+    """) # Params file finished
 
     # Define directories for the input and output files inside the container
     input_dir = os.path.join(os.path.expanduser("~"), "INPUT")
     output_dir = os.path.join(os.path.expanduser("~"), "OUTPUT")
     os.makedirs(output_dir, exist_ok=True)
     context.set_progress(value=0, message="Processing")  # Set progress status so it is displayed in the platform
-
-    """ Get the input data """
 
     # Retrieve input files
     fs_handlers = context.get_files("FreeSurfer", file_filter_condition_name="c_fs")
@@ -201,19 +184,17 @@ roisfn={roisfn}
         context.set_progress(f"{pet_handler.get_file_path()} -> {input_dir}")
 
     # Run the rootpetproc.sh script
-    script_path = "/root/rootpetproc.sh"
+    cwd = os.getcwd()
+    script_path = cwd+"/rootpetproc.sh"
 
     output, error = subprocess.Popen(["bash", script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
     context.set_progress(f"SCRIPT RUN OUTPUT: {output}")
     context.set_progress(f"SCRIPT RUN ERR: {error}")
 
     # Upload the files 
-    """ Upload results """
-
     for target in glob.glob("/root/OUTPUT/*.petproc"):
         context.upload_file(target, os.path.relpath(target, "/root/OUTPUT/"))
 
-    return
     # Define the target directory and folder name
     target_directory = "/root/OUTPUT"
     folder_name = "pet_proc"
