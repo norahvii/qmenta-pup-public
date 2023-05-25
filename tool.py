@@ -185,7 +185,7 @@ roisfn={roisfn}
 
     # Run the rootpetproc.sh script
     cwd = os.getcwd()
-    script_path = cwd+"/rootpetproc.sh"
+    script_path = "/root/rootpetproc.sh"
 
     output, error = subprocess.Popen(["bash", script_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
     context.set_progress(f"SCRIPT RUN OUTPUT: {output}")
