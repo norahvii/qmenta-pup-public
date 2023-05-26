@@ -182,43 +182,6 @@ roisfn={roisfn}
     pet_dir = "/data/input/PET"
     pet_file = context.get_files("PET", file_filter_condition_name="c_pet")[0].download(pet_dir)
 
-    # Copy all the PET files to the data folder
-    current_dir = '/root'
-    destination_dir = '/data/input/PET'
-
-    # Function to recursively find all DCM files
-    def find_dcm_files(directory):
-        dcm_files = []
-        for root, dirs, files in os.walk(directory):
-            for file in files:
-                if file.endswith('.dcm'):
-                    dcm_files.append(os.path.join(root, file))
-        return dcm_files
-
-    # Find the "INPUT" folder
-    input_dir = None
-    for root, dirs, files in os.walk(current_dir):
-        if 'INPUT' in dirs:
-            input_dir = os.path.join(root, 'INPUT')
-            break
-
-    # Find the "PET" folder within the "INPUT" folder
-    pet_dir = None
-    if input_dir:
-        for root, dirs, files in os.walk(input_dir):
-            if 'PET' in dirs:
-                pet_dir = os.path.join(root, 'PET')
-                break
-
-    # Copy DCM files to the destination folder
-    if pet_dir:
-        dcm_files = find_dcm_files(pet_dir)
-        for file in dcm_files:
-            shutil.copy(file, destination_dir)
-            print(f"Copied {file} to {destination_dir}")
-    else:
-        print("Could not find the 'PET' folder within the 'INPUT' folder.")
-
     # Copy all the FreeSurfer folders to the data folder
     current_dir = '/root'
     destination_dir = '/data/input/FreeSurfer'
@@ -251,9 +214,9 @@ roisfn={roisfn}
     # Copy the cluster of folders to the destination folder
     if cluster_dir:
         copy_folder(cluster_dir, destination_dir)
-        print(f"Cluster of folders copied to {destination_dir}")
+        context.set_progress(f"Cluster of folders copied to {destination_dir}")
     else:
-        print("Could not find the cluster of five folders within the 'INPUT' folder.")
+        context.set_progress("Could not find the cluster of five folders within the 'INPUT' folder.")
 
     # Prepare to run the petproc script
     os.chdir('root')
