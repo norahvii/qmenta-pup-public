@@ -113,9 +113,9 @@ refimg={refimg}
 tolreg={tolreg}
 rmf={rmf}
 mmf={mmf}
-rbf={rbf}
-mbf={mbf}
-modf={modf}
+rbf="{rbf}"
+mbf="{mbf}"
+modf="{modf}"
 
 ################################################################################
 # ROI parameters                                                                     #
@@ -179,11 +179,8 @@ roisfn={roisfn}
         fs_handler.download(input_dir)
         context.set_progress(f"{fs_handler.get_file_path()} -> {input_dir}")
 
-    pet_handlers = context.get_files("PET", file_filter_condition_name="c_pet")
-    for pet_handler in pet_handlers:
-        pet_handler.download(input_dir)
-        context.set_progress(f"{pet_handler.get_file_path()} -> {input_dir}")
-
+    pet_dir = "/data/input/PET"
+    pet_file = context.get_files("PET", file_filter_condition_name="c_pet")[0].download(pet_dir)
 
     # Copy all the PET files to the data folder
     current_dir = '/root'
