@@ -10,7 +10,7 @@
       "mandatory": 1,
       "file_filter": "c_fs[1,*](r'.*')",
       "in_filter": [],
-      "out_filter": ["qmenta_upload_offline_analysis_staging"],
+      "out_filter": ["qmenta_upload_offline_analysis_staging", "qmenta_upload_offline_analysis_master", "qmenta_upload_offline_analysis"],
       "batch": 1,
       "anchor": 1,
       "section": "data"
